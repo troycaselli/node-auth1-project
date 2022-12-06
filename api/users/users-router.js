@@ -3,9 +3,14 @@ const router = require('express').Router();
 const Users = require('./users-model');
 
 
-router.get("/", (req, res) => {
-  res.json({message: 'users working'});
-});
+router.get('/', async (req, res, next) => {
+    try {
+        const users = await Users.find();
+        res.status(200).json(users);
+    }  catch(err) {
+      next(err);
+    }
+})
 
 /**
   [GET] /api/users
@@ -31,5 +36,4 @@ router.get("/", (req, res) => {
  */
 
 
-// Don't forget to add the router to the `exports` object so it can be required in other modules
 module.exports = router;
