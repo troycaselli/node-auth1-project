@@ -3,22 +3,15 @@ const db = require('../../data/db-config');
 /**
   resolves to an ARRAY with all users, each user having { user_id, username }
  */
-async function find(req, res, next) {
-  try {
-    const users = await db('users');
-    return users.map(user => {
-      return {user_id: user.user_id, username: user.username};
-    })
-  } catch(err) {
-    next(err);
-  }
+async function find() {
+    return db('users').select('user_id', 'username');
 }
 
 /**
   resolves to an ARRAY with all users that match the filter condition
  */
 function findBy(filter) {
-
+  return db('users').where(filter).select('user_id', 'username');
 }
 
 /**
