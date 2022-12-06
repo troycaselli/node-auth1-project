@@ -3,6 +3,11 @@
 const router = require('express').Router();
 const Users = require('../users/users-model');
 
+const {
+  checkUsernameFree,
+  checkUsernameExists,
+  checkPasswordLength} = require('./auth-middleware');
+
 
 router.post("/", async (req, res, next) => {
   try {
