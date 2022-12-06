@@ -4,8 +4,13 @@ const router = require('express').Router();
 const Users = require('../users/users-model');
 
 
-router.get("/", (req, res) => {
-  res.json({message: 'auth working'});
+router.post("/", async (req, res, next) => {
+  try {
+    const newUser = await Users.add(req.body);
+    res.status(200).json(newUser);
+  } catch(err) {
+    next(err);
+  }
 });
 
 /**
