@@ -23,7 +23,7 @@ router.post('/login', async (req, res, next) => {
   try {
     const {username, password} = req.body;
     const [user] = await Users.findBy({username});
-    if(bcryptjs.compareSync(password, user.password)) {
+    if(user && bcryptjs.compareSync(password, user.password)) {
       req.session.user = user;
       res.status(200).json({message: `Welcome ${user.username}`});
     } else {
