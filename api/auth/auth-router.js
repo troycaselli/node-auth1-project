@@ -9,7 +9,7 @@ const {
   checkPasswordLength} = require('./auth-middleware');
 
 
-router.post("/", checkUsernameFree, async (req, res, next) => {
+router.post("/", checkUsernameFree, checkPasswordLength, async (req, res, next) => {
   try {
     const newUser = await Users.add(req.body);
     res.status(200).json(newUser);
