@@ -19,7 +19,7 @@ router.post('/register', checkUsernameFree, checkPasswordLength, async (req, res
   }
 });
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', checkUsernameExists, async (req, res, next) => {
   try {
     const {username, password} = req.body;
     const [user] = await Users.findBy({username});
@@ -34,38 +34,19 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
-/**
-  2 [POST] /api/auth/login { "username": "sue", "password": "1234" }
-
-  response:
-  status 200
-  {
-    "message": "Welcome sue!"
+router.get('/logout', (req, res, next) => {
+  if(req.session.user) {
+    req.session.destroy(err => {
+      if(err) {
+        res.status(200).json({message: 'logout failed'});
+      } else {
+        res.set('Set-Cookie', 'monkey=; SameSite=Strict; Path=/; Expires=Thu, 01 Jan 1970 00:00:00');
+        res.status(200).json({message: 'logged out'});
+      }
+    })
+  } else {
+    res.status(200).json({message: 'no session'});
   }
-
-  response on invalid credentials:
-  status 401
-  {
-    "message": "Invalid credentials"
-  }
- */
-
-
-/**
-  3 [GET] /api/auth/logout
-
-  response for logged-in users:
-  status 200
-  {
-    "message": "logged out"
-  }
-
-  response for not-logged-in users:
-  status 200
-  {
-    "message": "no session"
-  }
- */
-
+})
 
 module.exports = router;
