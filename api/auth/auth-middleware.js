@@ -21,22 +21,15 @@ async function checkUsernameFree(req, res, next) {
   }
 }
 
-/*
-  If the username in req.body does NOT exist in the database
-
-  status 401
-  {
-    "message": "Invalid credentials"
-  }
-*/
 async function checkUsernameExists(req, res, next) {
   try {
     const {username} = req.body;
     const [user] = await Users.findBy({username});
     if(user) {
+      req.user = user;
       next();
     } else {
-      res.status(400).json({message: 'Invalid credentials'});
+      res.status(401).json({message: 'Invalid credentials'});
     }
   } catch (err) {
     next(err);

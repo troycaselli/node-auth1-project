@@ -22,20 +22,17 @@ const usersRouter = require('./users/users-router');
 
 const server = express();
 
-server.use(helmet());
-server.use(express.json());
-server.use(cors());
-
 server.use(session({
   name: 'chocolatechip',
   secret: 'top secret',
+  resave: false,
+  saveUninitialized: false,
   cookie: {
     maxAge: 100 * 60 * 60,
     secure: false,
-    httpOnly: false
+    httpOnly: true,
+    // sameSite: 'none' // this is for enabling third party cookies over https (not relevant for http)
   },
-  resave: false,
-  saveUninitialized: false,
   store: new Store({
     knex: require('../data/db-config'),
     tablename: 'sessions',
@@ -44,6 +41,10 @@ server.use(session({
     clearInterval: 1000 * 60 * 60
   })
 }));
+
+server.use(helmet());
+server.use(express.json());
+server.use(cors());
 
 server.use('/api/auth', authRouter);
 server.use('/api/users', usersRouter);
